@@ -6,7 +6,7 @@ public class Node {
 	private Node parentNode;
 	private Action action;
 	private State newState;
-	
+	private int depth;
 	
 	
 	public Node getParentNode() {
@@ -27,12 +27,17 @@ public class Node {
 	public void setNewState(State newState) {
 		this.newState = newState;
 	}
-	
+	public int getDepth() {
+		return depth;
+	}
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
 	
 	@Override
 	public String toString() {
 		
 		
-		return " Node : { Action : "+action+" , State : "+newState+" } ";
+		return " Node : { Depth : "+ depth+" Action : "+action+" , State : "+newState+" } ";
 	}
 }
