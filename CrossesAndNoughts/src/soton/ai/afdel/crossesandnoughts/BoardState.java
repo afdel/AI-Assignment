@@ -1,6 +1,7 @@
 package soton.ai.afdel.crossesandnoughts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardState {
@@ -8,6 +9,8 @@ public class BoardState {
 	private Move moveToGetHere;
 	
 	private Long[] cellsState = new Long[16];
+	
+	private Long stateEvaluation = null;
 	
 	public BoardState() {
 
@@ -36,6 +39,14 @@ public class BoardState {
 
 	public void setCellsState(Long[] cellsState) {
 		this.cellsState = cellsState;
+	}
+
+	public Long getStateEvaluation() {
+		return stateEvaluation;
+	}
+
+	public void setStateEvaluation(Long stateEvaluation) {
+		this.stateEvaluation = stateEvaluation;
 	}
 
 	public boolean isTheEnd() {
@@ -144,5 +155,34 @@ public class BoardState {
 		
 		return firstRowState+" \n "+secondRowState+" \n "+thirdRowState+" \n "+fourthRowState;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(cellsState);
+		result = prime * result + ((moveToGetHere == null) ? 0 : moveToGetHere.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BoardState other = (BoardState) obj;
+		if (!Arrays.equals(cellsState, other.cellsState))
+			return false;
+		if (moveToGetHere == null) {
+			if (other.moveToGetHere != null)
+				return false;
+		} else if (!moveToGetHere.equals(other.moveToGetHere))
+			return false;
+		return true;
+	}
+	
 	
 }

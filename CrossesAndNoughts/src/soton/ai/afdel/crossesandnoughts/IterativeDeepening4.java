@@ -2,10 +2,12 @@ package soton.ai.afdel.crossesandnoughts;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
-public class AlphaBeta {
+public class IterativeDeepening4 {
 
 	
 	/*
@@ -15,7 +17,7 @@ public class AlphaBeta {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 4;
+	private static int minimaxDepth = 3;
 	
 	private static Move moveToGuaranteeBestScore;
 	
@@ -23,6 +25,8 @@ public class AlphaBeta {
 	
 	private static int callsToMin = 0;
 	private static int callsToMax = 0;
+	
+	private static Map<BoardState, Long> boardStatesEvaluations;
 	
 	public static void main(String[] args) {
 		
@@ -60,15 +64,24 @@ public class AlphaBeta {
 
 	private static Move calculateTheNextMove1(BoardState boardState) {
 
-		System.out.println(" ##### Calculating Next Move .............. ");
-		// This will update the 
-		maxValue1( boardState, -1000000, 1000000, minimaxDepth);
+		boardStatesEvaluations = new HashMap<BoardState, Long>();
 		
-		System.out.println(" State Evaluated : "+statesEvaluated);
+		int totalStateEvaluated = 0;
+		
+		System.out.println(" ##### Calculating Next Move .............. ");
+		
+		for(int i=1; i<=minimaxDepth;i++){
+			maxValue1( boardState, -1000000, 1000000, i);
+			System.out.println(" State Evaluated After iteration "+i+" : "+statesEvaluated);
+			totalStateEvaluated = totalStateEvaluated +statesEvaluated;
+			statesEvaluated = 0;
+			System.out.println(" Calls To Min and Max : "+(callsToMax+callsToMin));
+			callsToMax = 0;
+			callsToMin = 0;
+		}
+		
+		System.out.println(" State Evaluated : "+totalStateEvaluated);
 		statesEvaluated = 0;
-		System.out.println(" Calls To Min and Max : "+(callsToMax+callsToMin));
-		callsToMax = 0;
-		callsToMin = 0;
 		System.out.println(" ######## Next Move Calculated ######## ");
 		
 		return moveToGuaranteeBestScore;
@@ -114,16 +127,40 @@ public class AlphaBeta {
 		callsToMax++;
 		
 		if( depth == 0){
-			return evaluateState1(boardState, 1L);
+			
+			// Store the evaluation
+			int stateEvaluation = evaluateState1(boardState, 1L);
+//			boardStatesEvaluations.put(boardState,(long) stateEvaluation);
+			
+			return stateEvaluation;
 		}
 		if( boardState.isTheEnd()){
-			return evaluateState1(boardState, 0L);
+			
+			// Store the evaluation
+			int stateEvaluation = evaluateState1(boardState, 0L);
+//			boardStatesEvaluations.put(boardState,(long) stateEvaluation);
+			
+			return stateEvaluation;
 		}
 		
+		List<BoardState> successors = generateSuccessors( boardState, 1L);
 		
-		for(BoardState successorState : generateSuccessors( boardState, 1L)){
+		// This is a ply depth where we generate states' successors for the first time
+		if(depth == 1){
+			// No order needed
+		}
+		else{ // The successors need to be ordered using their last evaluation
+			successors = order(successors);
+			// After ordering we should erase the evaluation of the states ordered it will be updated correctly when backing up next time
+			removeFromBoardStatesEvaluation(successors);
+		}
+		
+		for(BoardState successorState : successors){
 			
 			int successorEvaluation = minValue1(successorState,alpha,beta,depth-1);
+			
+			boardStatesEvaluations.put(successorState,(long) successorEvaluation);
+			
 			if( successorEvaluation>alpha){
 				alpha = successorEvaluation;
 				if( depth == minimaxDepth){
@@ -140,20 +177,44 @@ public class AlphaBeta {
 		
 	}
 
-
 	private static int minValue1(BoardState boardState, int alpha, int beta, int depth){
 		callsToMin++;
 		
 		if( depth == 0){
-			return evaluateState1(boardState, 2L);
+			
+			// Store the evaluation
+			int stateEvaluation = evaluateState1(boardState, 2L);
+//			boardStatesEvaluations.put(boardState,(long) stateEvaluation);
+			
+			return stateEvaluation;
 		}
 		if( boardState.isTheEnd()){
-			return evaluateState1(boardState, 0L);
+			
+			// Store the evaluation
+			int stateEvaluation = evaluateState1(boardState, 0L);
+//			boardStatesEvaluations.put(boardState,(long) stateEvaluation);
+			
+			return stateEvaluation;
 		}
 		
-		for(BoardState successorState : generateSuccessors( boardState, 2L)){
-			
+		List<BoardState> successors = generateSuccessors( boardState, 2L);
+		
+		// This is a ply depth where we generate states' successors for the first time
+		if(depth == 1){
+			// No order needed
+		}
+		else{ // The successors need to be ordered using their last evaluation
+			successors = order(successors);
+			// After ordering we should erase the evaluation of the states ordered it will be updated correctly when backing up next time
+			removeFromBoardStatesEvaluation(successors);
+		}
+		
+		for(BoardState successorState : successors){
+		
 			int successorEvaluation = maxValue1(successorState,alpha,beta,depth-1);
+			
+			boardStatesEvaluations.put(successorState,(long) successorEvaluation);
+			
 			if( successorEvaluation<beta){
 				beta = successorEvaluation;
 			}
@@ -164,6 +225,50 @@ public class AlphaBeta {
 		
 		return beta;
 		
+	}
+
+
+	private static void removeFromBoardStatesEvaluation(List<BoardState> successors) {
+		
+		for( BoardState successor : successors){
+			boardStatesEvaluations.remove(successor);
+		}
+	}
+
+
+	private static List<BoardState> order(List<BoardState> successors) {
+
+		// Populate each successor with its evaluation
+		for(BoardState successor : successors){
+			
+			Long evaluation = boardStatesEvaluations.get(successor);
+			successor.setStateEvaluation(evaluation);
+		}
+		
+		// Sort by evaluation
+		Collections.sort(successors, new Comparator<BoardState>() {
+			public int compare(BoardState o1, BoardState o2) {
+				
+				
+				if( o1.getStateEvaluation()==null && o2.getStateEvaluation()==null){
+					return 0;
+				}
+				else{
+					if( o1.getStateEvaluation()==null){
+						return -1;
+					}
+					if(o2.getStateEvaluation()==null){
+						return 1;
+					}
+				}
+				
+				return (o1.getStateEvaluation()).compareTo(o2.getStateEvaluation());
+			}
+		});
+		
+		Collections.reverse(successors);
+		
+		return successors;
 	}
 	
 	
@@ -400,7 +505,7 @@ public class AlphaBeta {
 			
 		}
 		
-		Collections.shuffle(successors);
+//		Collections.shuffle(successors);
 		
 		return successors;
 	}
