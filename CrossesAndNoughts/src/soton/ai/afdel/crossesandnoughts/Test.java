@@ -1,219 +1,123 @@
 package soton.ai.afdel.crossesandnoughts;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Test {
 
+	private static Map<BoardState, Long> boardStatesEvaluations;
 	
 	public static void main(String[] args) {
 		
 		
-		BoardState boardState = new BoardState();
-		boardState.setCellsState(new Long[]{1L,2L,1L,1L,
-											2L,1L,1L,2L,
-											0L,1L,2L,1L,
-											1L,2L,2L,2L});
+		BoardState boardState1 = new BoardState();
+		boardState1.setCellsState(new Long[]{1L,1L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState1.setMoveToGetHere(new Move(1,1L));
 		
-//				 [ 1,2,1,1] 
-//				 [ 2,1,1,2] 
-//				 [ 0,1,2,1] 
-//				 [ 1,2,2,2]
-		
-		System.out.println( boardState.thereIsAwinner());
-		
-//		int rowsEvaluation = 0;
-//		for(int i =1; i<5;i++){
-//			// If a row contains just a player's sign count the number of signs
-//			
-//			// if row contains both signs
-//			int rowEvaluation = 0;
-//			
-//			boolean rowHasFirstSign = false;
-//			boolean rowHasSecondSign = false;
-//			
-//			Long signOccuring = 0L;
-//			int signOccurrenceInRow = 0;
-//			
-//			for(int j =1; j<5;j++){
-//				
-//				Long cell = boardState.getCellsState()[(i-1)*4 + j - 1];
-//				
-//				if(cell.equals(1L)){
-//					rowHasFirstSign = true;
-//				}
-//				if(cell.equals(2L)){
-//					rowHasSecondSign = true;
-//				}
-//				
-//				if(rowHasSecondSign & rowHasFirstSign){
-//					break;
-//				}
-//				else if(!cell.equals(0L)){
-//					signOccuring = cell;
-//					signOccurrenceInRow++;
-//				}
-//			}
-//			
-//			if(rowHasSecondSign & rowHasFirstSign){
-//				rowEvaluation = 0;
-//			}
-//			else{
-//				rowEvaluation = signOccurrenceInRow==0?0:(signOccurrenceInRow==1?1:(signOccurrenceInRow==2?4:8));
-//				if(signOccuring.equals(2L)){
-//					rowEvaluation = -1*rowEvaluation;
-//				}
-//			}
-//			Long[] cells = boardState.getCellsState();
-//			int firstCellInRow = (i-1)*4;
-//			System.out.println(" Row : ["+cells[firstCellInRow]+","+cells[firstCellInRow+1]+","+cells[firstCellInRow+2]+","+cells[firstCellInRow+3]+"] / Evaluation : "+rowEvaluation);
-//			
-//			rowsEvaluation = rowsEvaluation + rowEvaluation;
-//		}
-//		
-//		System.out.println(rowsEvaluation);
-		
-		// explore columns
-//				int columnsEvaluation = 0;
-//				
-//				for(int i =1; i<5;i++){
-//				
-//					int columnEvaluation = 0;
-//					
-//					boolean columnHasFirstSign = false;
-//					boolean columnHasSecondSign = false;
-//					
-//					Long signOccuring = 0L;
-//					int signOccurrenceInColumn = 0;
-//					
-//					for(int j =1; j<5;j++){
-//						
-//						Long cell = boardState.getCellsState()[(i-1)+ 4*(j-1)];
-//						
-//						if(cell.equals(1L)){
-//							columnHasFirstSign = true;
-//						}
-//						if(cell.equals(2L)){
-//							columnHasSecondSign = true;
-//						}
-//						
-//						if(columnHasFirstSign & columnHasSecondSign){
-//							break;
-//						}
-//						else if(!cell.equals(0L)){
-//							signOccuring = cell;
-//							signOccurrenceInColumn++;
-//						}
-//					}
-//					
-//					if(columnHasSecondSign & columnHasFirstSign){
-//						columnEvaluation = 0;
-//					}
-//					else{
-//						columnEvaluation = signOccurrenceInColumn==0?0:(signOccurrenceInColumn==1?1:(signOccurrenceInColumn==2?4:8));
-//						if(signOccuring.equals(2L)){
-//							columnEvaluation = -1*columnEvaluation;
-//						}
-//					}
-//					columnsEvaluation = columnsEvaluation + columnEvaluation;
-//					
-//					Long[] cells = boardState.getCellsState();
-//					int firstCellInColumn = i-1;
-//					System.out.println(" Column : ["+cells[firstCellInColumn]+","+cells[firstCellInColumn+4]+","+cells[firstCellInColumn+8]+","+cells[firstCellInColumn+12]+"] / Evaluation : "+columnEvaluation);
-//					
-//				}
-//		
-//		System.out.println(columnsEvaluation);
-		
-		
-		// Diagonal 1
-//				int diag1Evaluation = 0;
-//					
-//				boolean diag1HasFirstSign = false;
-//				boolean diag1HasSecondSign = false;
-//					
-//				Long signOccuringDiag1 = 0L;
-//				int signOccurrenceInDiag1 = 0;
-//					
-//				int[] diag1CellsIdx = {0,5,10,15};
-//				
-//				for(int j =0; j<4;j++){
-//						
-//					Long cell = boardState.getCellsState()[diag1CellsIdx[j]];
-//						
-//						if(cell.equals(1L)){
-//							diag1HasFirstSign = true;
-//						}
-//						if(cell.equals(2L)){
-//							diag1HasSecondSign = true;
-//						}
-//						
-//						if(diag1HasFirstSign & diag1HasSecondSign){
-//							break;
-//						}
-//						else if(!cell.equals(0L)){
-//							signOccuringDiag1 = cell;
-//							signOccurrenceInDiag1++;
-//						}
-//					}
-//					
-//					if(diag1HasFirstSign & diag1HasSecondSign){
-//						diag1Evaluation = 0;
-//					}
-//					else{
-//						diag1Evaluation = signOccurrenceInDiag1==0?0:(signOccurrenceInDiag1==1?1:(signOccurrenceInDiag1==2?4:8));
-//						if(signOccuringDiag1.equals(2L)){
-//							diag1Evaluation = -1*diag1Evaluation;
-//						}
-//					}
-//		
-//				System.out.println(" Diagonal 1 : ["+boardState.getCellsState()[diag1CellsIdx[0]]+","
-//													+boardState.getCellsState()[diag1CellsIdx[1]]+","
-//													+boardState.getCellsState()[diag1CellsIdx[2]]+","
-//													+boardState.getCellsState()[diag1CellsIdx[3]]+"] / Evaluation : "+diag1Evaluation);
 
-		// Diagonal 2
-//		int diag2Evaluation = 0;
-//			
-//		boolean diag2HasFirstSign = false;
-//		boolean diag2HasSecondSign = false;
-//			
-//		Long signOccuringDiag2 = 0L;
-//		int signOccurrenceInDiag2 = 0;
-//			
-//		int[] diag2CellsIdx = {3,6,9,12};
-//		
-//		for(int j =0; j<4;j++){
-//				
-//			Long cell = boardState.getCellsState()[diag2CellsIdx[j]];
-//				
-//				if(cell.equals(1L)){
-//					diag2HasFirstSign = true;
-//				}
-//				if(cell.equals(2L)){
-//					diag2HasSecondSign = true;
-//				}
-//				
-//				if(diag2HasFirstSign & diag2HasSecondSign){
-//					break;
-//				}
-//				else if(!cell.equals(0L)){
-//					signOccuringDiag2 = cell;
-//					signOccurrenceInDiag2++;
-//				}
-//			}
-//			
-//			if(diag2HasFirstSign & diag2HasSecondSign){
-//				diag2Evaluation = 0;
-//			}
-//			else{
-//				diag2Evaluation = signOccurrenceInDiag2==0?0:(signOccurrenceInDiag2==1?1:(signOccurrenceInDiag2==2?4:8));
-//				if(signOccuringDiag2.equals(2L)){
-//					diag2Evaluation = -1*diag2Evaluation;
-//				}
-//			}
-//			System.out.println(" Diagonal 2 : ["+boardState.getCellsState()[diag2CellsIdx[0]]+","
-//												+boardState.getCellsState()[diag2CellsIdx[1]]+","
-//												+boardState.getCellsState()[diag2CellsIdx[2]]+","
-//												+boardState.getCellsState()[diag2CellsIdx[3]]+"] / Evaluation : "+diag2Evaluation);	
+		BoardState boardState2 = new BoardState();
+		boardState2.setCellsState(new Long[]{1L,0L,1L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState2.setMoveToGetHere(new Move(2,1L));
 		
+
+		BoardState boardState3 = new BoardState();
+		boardState3.setCellsState(new Long[]{1L,0L,0L,1L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState3.setMoveToGetHere(new Move(3,1L));
+		
+		boardStatesEvaluations = new HashMap<BoardState, Long>();
+		boardStatesEvaluations.put(boardState1, 4L);
+		boardStatesEvaluations.put(boardState2, 8L);
+		boardStatesEvaluations.put(boardState3, 6L);
+		
+		// ********************************
+
+		BoardState boardState4 = new BoardState();
+		boardState4.setCellsState(new Long[]{1L,0L,1L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState4.setMoveToGetHere(new Move(2,1L));
+		
+
+		BoardState boardState5 = new BoardState();
+		boardState5.setCellsState(new Long[]{1L,0L,0L,1L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState5.setMoveToGetHere(new Move(3,1L));
+		
+
+		BoardState boardState6 = new BoardState();
+		boardState6.setCellsState(new Long[]{1L,0L,0L,0L,
+											1L,0L,0L,0L,
+											0L,0L,0L,0L,
+											0L,0L,0L,0L});
+		boardState6.setMoveToGetHere(new Move(4,1L));
+		
+		
+		List<BoardState> successors = new ArrayList<BoardState>();
+		successors.add(boardState6);
+		successors.add(boardState4);
+		successors.add(boardState5);
+		
+		
+		List<BoardState> ordered = order(successors,-1);
+	
+		System.out.println(" First : "+ordered.get(0).getStateEvaluation());
+		System.out.println(" Second : "+ordered.get(1).getStateEvaluation());
+		System.out.println(" Third : "+ordered.get(2).getStateEvaluation());
+		
+	}
+	
+	
+	
+	private static List<BoardState> order(List<BoardState> successors, final int maxOrMin) {
+
+		// Populate each successor with its evaluation
+		for(BoardState successor : successors){
+			
+			Long evaluation = boardStatesEvaluations.get(successor);
+			successor.setStateEvaluation(evaluation);
+		}
+		
+		// Sort by evaluation
+		Collections.sort(successors, new Comparator<BoardState>() {
+			public int compare(BoardState o1, BoardState o2) {
+				
+				
+				if( o1.getStateEvaluation()==null && o2.getStateEvaluation()==null){
+					return 0;
+				}
+				else{
+					if( o1.getStateEvaluation()==null){
+						return -1*maxOrMin;
+					}
+					if(o2.getStateEvaluation()==null){
+						return maxOrMin;
+					}
+				}
+				
+				return (o1.getStateEvaluation()).compareTo(o2.getStateEvaluation());
+			}
+		});
+		if( maxOrMin == 1){
+			Collections.reverse(successors);
+		}
+		
+		return successors;
 	}
 	
 }

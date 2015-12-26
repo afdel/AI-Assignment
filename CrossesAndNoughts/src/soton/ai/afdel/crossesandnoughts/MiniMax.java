@@ -14,11 +14,14 @@ public class MiniMax {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 5;
+	private static int minimaxDepth = 2;
 	
 	private static Move moveToGuaranteeBestScore;
 	
 	private static int statesEvaluated = 0;
+	
+	private static int callsToMin = 0;
+	private static int callsToMax = 0;
 	
 	public static void main(String[] args) {
 		
@@ -62,6 +65,9 @@ public class MiniMax {
 		
 		System.out.println(" State Evaluated : "+statesEvaluated);
 		statesEvaluated = 0;
+		System.out.println(" Calls To Min and Max : "+(callsToMax+callsToMin));
+		callsToMax = 0;
+		callsToMin = 0;
 		System.out.println(" ######## Next Move Calculated ######## ");
 		
 		return moveToGuaranteeBestScore;
@@ -104,7 +110,7 @@ public class MiniMax {
 
 
 	private static int maxValue1(BoardState boardState, int depth){
-		
+		callsToMax++;
 		if( depth == 0){
 			return evaluateState1(boardState, 1L);
 		}
@@ -131,7 +137,7 @@ public class MiniMax {
 
 
 	private static int minValue1(BoardState boardState, int depth){
-		
+		callsToMin++;
 		if( depth == 0){
 			return evaluateState1(boardState, 2L);
 		}
