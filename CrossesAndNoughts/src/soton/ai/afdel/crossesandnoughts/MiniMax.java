@@ -2,7 +2,6 @@ package soton.ai.afdel.crossesandnoughts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MiniMax {
 
@@ -14,7 +13,7 @@ public class MiniMax {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 2;
+	private static int minimaxDepth = 8;
 	
 	private static Move moveToGuaranteeBestScore;
 	
