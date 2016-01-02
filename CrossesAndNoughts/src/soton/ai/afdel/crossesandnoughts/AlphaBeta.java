@@ -15,7 +15,7 @@ public class AlphaBeta {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 4;
+	private static int minimaxDepth = 3;
 	
 	private static Move moveToGuaranteeBestScore;
 	
