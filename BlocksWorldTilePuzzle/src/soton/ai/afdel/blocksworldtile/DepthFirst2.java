@@ -36,11 +36,11 @@ public class DepthFirst2 {
 		List<Node> nodes = expandNode(firstNode);
 		// Randomize before adding
 		Collections.shuffle(nodes);
-		System.out.println(" Update fringe : Old fringe : "+fringe);
+//		System.out.println(" Update fringe : Old fringe : "+fringe);
 		fringe.addAll(nodes);
 		maxFringeSize = fringe.size();
 		maxMemory = getCountNodeInMemory(fringe);
-		System.out.println(" Update fringe : New fringe : "+fringe);
+//		System.out.println(" Update fringe : New fringe : "+fringe);
 		
 		boolean solutionFound = false;
 		
@@ -51,7 +51,7 @@ public class DepthFirst2 {
 			}
 			
 			Node nextNode = getNode(fringe); // get last node in the fringe and remove it
-			System.out.println(" Node from fringe : "+nextNode);
+//			System.out.println(" Node from fringe : "+nextNode);
 			goTo(nextNode); // Applies the move to parentNode's state and get the new state
 			solutionFound = evaluateNode(nextNode); // check if the new state is the goal state
 			if(solutionFound){
@@ -139,24 +139,24 @@ public class DepthFirst2 {
 	private static void goTo(Node node) {
 
 		
-		System.out.println(" GO TO NODE : previous state : "+node.getParentNode());
+//		System.out.println(" GO TO NODE : previous state : "+node.getParentNode());
 		Action action = node.getAction();
-		System.out.println(" APPLY : "+action.toString());
+//		System.out.println(" APPLY : "+action.toString());
 		State prevState = node.getParentNode().getNewState();
 		
 		State newState = move(prevState,action);
 		node.setNewState(newState);
-		System.out.println(" New State : "+node);
+//		System.out.println(" New State : "+node);
 	}
 
 	private static Node getNode(List<Node> fringe) {
-		System.out.println(" Getting node from fringe ");
+//		System.out.println(" Getting node from fringe ");
 		return fringe.remove(fringe.size()-1);
 	}
 
 	private static List<Node> expandNode(Node prevNode) {
 		
-		System.out.println("Expanding current node"+prevNode);
+//		System.out.println("Expanding current node"+prevNode);
 		nodeExpanded++;
 		
 		List<Node> nodes = new ArrayList<Node>();
@@ -166,7 +166,7 @@ public class DepthFirst2 {
 		
 		if( possibleToMoveRight(prevAgentPos)){
 			
-			System.out.println(" Possible to go right");
+//			System.out.println(" Possible to go right");
 			
 //			State newState = move(prevState,Action.RIGHT);
 			Node newNode = new Node();
@@ -179,7 +179,7 @@ public class DepthFirst2 {
 
 		if( possibleToMoveUp(prevAgentPos)){
 			
-			System.out.println(" Possible to go up");
+//			System.out.println(" Possible to go up");
 			
 //			State newState = move(prevState,Action.UP);
 			Node newNode = new Node();
@@ -192,7 +192,7 @@ public class DepthFirst2 {
 		
 		if( possibleToMoveLeft(prevAgentPos)){
 			
-			System.out.println(" Possible to go left");
+//			System.out.println(" Possible to go left");
 			
 //			State newState = move(prevState,Action.LEFT);
 			Node newNode = new Node();
@@ -205,7 +205,7 @@ public class DepthFirst2 {
 		
 		if( possibleToMoveDown(prevAgentPos)){
 			
-			System.out.println(" Possible to go down");
+//			System.out.println(" Possible to go down");
 			
 //			State newState = move(prevState,Action.DOWN);
 			Node newNode = new Node();

@@ -13,7 +13,7 @@ public class MiniMax {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 8;
+	private static int minimaxDepth = 2;
 	
 	private static Move moveToGuaranteeBestScore;
 	

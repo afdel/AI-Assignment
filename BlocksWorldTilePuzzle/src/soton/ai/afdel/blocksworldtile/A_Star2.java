@@ -2,24 +2,20 @@ package soton.ai.afdel.blocksworldtile;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class A_Star {
+public class A_Star2 {
 
-
+	
 	static int gridSize = 4;
 	
-	static State initialState = new State(6,14,10,5); // grid size 4 : 11
-//	static State initialState = new State(7,8,9,6); // grid size 3 : 12
-//	static State initialState = new State(13,14,15,16); // grid size 4 : 14
-//	static State initialState = new State(21,22,23,25); // grid size 5 : 15
-//	static State initialState = new State(8,12,16,4);
-
-	static State goalState = new State(5,9,13,1); // grid size 4 : 11
-//	static State goalState = new State(1,4,7,8); // grid size 3 : 12
-//	static State goalState = new State(6,10,14,16); // grid size 4 : 14
-//	static State goalState = new State(11,16,21,25); // grid size 5 : 15
-//	static State goalState = new State(13,15,16,14);
+	static State initialState = new State(13,14,15,16);
+//	static State initialState = new State(14,13,9,16);
+	
+	static State goalState = new State(6,10,14,16);
+//	static State goalState = new State(15,14,13,1);
 	
 	static List<Node_H> fringe = new ArrayList<Node_H>();
 	
@@ -27,6 +23,7 @@ public class A_Star {
 	static int nodeGenerated = 0;
 	
 	static int maxFringeSize = 0;
+	static int maxMemory = 0;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -39,10 +36,11 @@ public class A_Star {
 		
 		List<Node_H> nodes = expandNode(firstNode);
 		
-		System.out.println(" Update fringe : Old fringe : "+fringe);
+//		System.out.println(" Update fringe : Old fringe : "+fringe);
 		fringe.addAll(nodes);
 		maxFringeSize = fringe.size();
-		System.out.println(" Update fringe : New fringe : "+fringe);
+		maxMemory = getCountNodeInMemory(fringe);
+//		System.out.println(" Update fringe : New fringe : "+fringe);
 		
 		boolean solutionFound = false;
 		
@@ -51,9 +49,8 @@ public class A_Star {
 			if(fringe.isEmpty()){
 				break;
 			}
-			System.out.println();
 			Node_H nextNode = getNode(fringe); // get node with the smaller cost function from the fringe and remove it
-			System.out.println(" Node from fringe : "+nextNode);
+//			System.out.println(" Node from fringe : "+nextNode);
 			solutionFound = evaluateNode(nextNode); // check if the new state is the goal state
 			if(solutionFound){
 				solutionNode = nextNode;
@@ -64,6 +61,10 @@ public class A_Star {
 				if( fringe.size() > maxFringeSize){
 					maxFringeSize = fringe.size();
 				}
+				int nodesInMemory = getCountNodeInMemory(fringe);
+				if( nodesInMemory > maxMemory){
+					maxMemory = nodesInMemory;
+				}
 			}
 		}
 		
@@ -73,11 +74,37 @@ public class A_Star {
 			System.out.println(" Node expanded : "+nodeExpanded);
 			System.out.println(" Node generated : "+nodeGenerated);
 			System.out.println(" Max Fringe size : "+maxFringeSize);
+			System.out.println(" Max Node In Memory : "+maxMemory);
 		}
 		else{
 			System.out.println(" No Solution");
 		}
 		
+	}
+	
+	private static int getCountNodeInMemory(List<Node_H> fringe) {
+
+		Set<Node_H> uniqueNodes = new HashSet<Node_H>();
+		
+		for( Node_H node : fringe){
+			uniqueNodes.add(node);
+			uniqueNodes.addAll(getAncestors(node));
+		}
+		
+		return uniqueNodes.size();
+	}
+
+	private static List<Node_H> getAncestors(Node_H node) {
+		
+		List<Node_H> getAncestors = new ArrayList<Node_H>();
+		
+		Node_H parentNode = node.getParentNode();
+		if( parentNode != null){
+			getAncestors.add(parentNode);
+			getAncestors.addAll(getAncestors(parentNode));
+		}
+		
+		return getAncestors;
 	}
 
 	private static void printPath(Node_H solutionNode) {
@@ -106,9 +133,9 @@ public class A_Star {
 
 	private static void goTo(Node_H node) {
 
-		System.out.println(" GO TO NODE : previous state : "+node.getParentNode());
+//		System.out.println(" GO TO NODE : previous state : "+node.getParentNode());
 		Action action = node.getAction();
-		System.out.println(" APPLY : "+action.toString());
+//		System.out.println(" APPLY : "+action.toString());
 		State prevState = node.getParentNode().getNewState();
 		
 		State newState = move(prevState,action);
@@ -117,12 +144,12 @@ public class A_Star {
 		// Calculate cost to goal
 		node.setCostToGoal(getCostToGoal(node.getNewState()));
 		
-		System.out.println(" New State : "+node);
+//		System.out.println(" New State : "+node);
 	}
 
 	private static Node_H getNode(List<Node_H> fringe) throws Exception {
 		
-		System.out.println(" Getting node from fringe ");
+//		System.out.println(" Getting node from fringe ");
 
 		Node_H nodeWithLeastCost = null;
 		
@@ -141,13 +168,13 @@ public class A_Star {
 		if(!fringe.remove(nodeWithLeastCost)){
 			throw new Exception(" Failed To Remove returned node from the fringe");
 		}
-		System.out.println(" Node from fringe "+nodeWithLeastCost);
+//		System.out.println(" Node from fringe "+nodeWithLeastCost);
 		return nodeWithLeastCost;
 	}
 
 	private static List<Node_H> expandNode(Node_H prevNode) {
 		
-		System.out.println(" *********************** Expanding current node"+prevNode);
+//		System.out.println(" *********************** Expanding current node"+prevNode);
 		nodeExpanded++;
 		
 		List<Node_H> nodes = new ArrayList<Node_H>();
@@ -157,7 +184,7 @@ public class A_Star {
 		
 		if( possibleToMoveRight(prevAgentPos)){
 			
-			System.out.println(" Possible to go right");
+//			System.out.println(" Possible to go right");
 			
 			Node_H newNode = new Node_H();
 			newNode.setParentNode(prevNode);
@@ -171,7 +198,7 @@ public class A_Star {
 
 		if( possibleToMoveUp(prevAgentPos)){
 			
-			System.out.println(" Possible to go up");
+//			System.out.println(" Possible to go up");
 			
 			Node_H newNode = new Node_H();
 			newNode.setParentNode(prevNode);
@@ -185,7 +212,7 @@ public class A_Star {
 		
 		if( possibleToMoveLeft(prevAgentPos)){
 			
-			System.out.println(" Possible to go left");
+//			System.out.println(" Possible to go left");
 			
 			Node_H newNode = new Node_H();
 			newNode.setParentNode(prevNode);
@@ -199,7 +226,7 @@ public class A_Star {
 		
 		if( possibleToMoveDown(prevAgentPos)){
 			
-			System.out.println(" Possible to go down");
+//			System.out.println(" Possible to go down");
 			
 			Node_H newNode = new Node_H();
 			newNode.setParentNode(prevNode);
@@ -211,9 +238,9 @@ public class A_Star {
 			nodes.add(newNode);
 		}
 
-
 		nodeGenerated = nodeGenerated + nodes.size();
-		System.out.println(" *********************** End Of Expansion");
+
+//		System.out.println(" *********************** End Of Expansion");
 		
 		return nodes;
 	}

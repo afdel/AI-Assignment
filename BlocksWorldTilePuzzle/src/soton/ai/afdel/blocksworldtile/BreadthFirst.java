@@ -7,16 +7,24 @@ import java.util.List;
 public class BreadthFirst {
 
 	
-	static int gridSize = 4;
+	static int gridSize = 5;
 	
-	static State initialState = new State(13,14,15,16);
-	
-	static State goalState = new State(6,10,14,16);
+//	static State initialState = new State(6,14,10,5); // grid size 4 : 11
+//	static State initialState = new State(7,8,9,6); // grid size 3 : 12
+//	static State initialState = new State(13,14,15,16); // grid size 4 : 14
+	static State initialState = new State(21,22,23,25); // grid size 5 : 15
+//	static State initialState = new State(8,12,16,4);
+
+//	static State goalState = new State(5,9,13,1); // grid size 4 : 11
+//	static State goalState = new State(1,4,7,8); // grid size 3 : 12
+//	static State goalState = new State(6,10,14,16); // grid size 4 : 14
+	static State goalState = new State(11,16,21,25); // grid size 5 : 15
 //	static State goalState = new State(13,15,16,14);
 	
 	static List<Node> fringe = new ArrayList<Node>();
 	
 	static int nodeExpanded = 0;
+	static int nodeGenerated = 0;
 	
 	static int maxFringeSize = 0;
 	
@@ -26,9 +34,12 @@ public class BreadthFirst {
 		
 		Node firstNode = new Node();
 		firstNode.setNewState(initialState);
+		nodeGenerated++;
 		
 		List<Node> nodes = expandNode(firstNode);
 		
+		// Randomize before adding
+		Collections.shuffle(nodes);
 //		System.out.println(" Update fringe : Old fringe : "+fringe);
 		fringe.addAll(nodes);
 		maxFringeSize = fringe.size();
@@ -52,6 +63,8 @@ public class BreadthFirst {
 			}else {
 //				removeNode(fringe,nextNode);
 				List<Node> newNodes = expandNode(nextNode); // if possible
+				// Randomize before adding if not empty
+				Collections.shuffle(newNodes);
 				fringe.addAll(newNodes);
 				if( fringe.size() > maxFringeSize){
 					maxFringeSize = fringe.size();
@@ -63,6 +76,7 @@ public class BreadthFirst {
 		if(solutionFound){
 			printPath(solutionNode);
 			System.out.println(" Node expanded : "+nodeExpanded);
+			System.out.println(" Node generated : "+nodeGenerated);
 			System.out.println(" Max Fringe size : "+maxFringeSize);
 		}
 		else{
@@ -168,7 +182,8 @@ public class BreadthFirst {
 			nodes.add(newNode);
 		}
 
-		
+
+		nodeGenerated = nodeGenerated + nodes.size();
 		return nodes;
 	}
 
