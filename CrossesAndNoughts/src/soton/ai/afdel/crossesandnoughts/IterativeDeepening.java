@@ -17,7 +17,7 @@ public class IterativeDeepening {
 	 * 
 	 */
 	
-	private static int minimaxDepth = 4;
+	private static int minimaxDepth = 7;
 	
 	private static Move moveToGuaranteeBestScore;
 	
@@ -25,6 +25,7 @@ public class IterativeDeepening {
 	
 	private static int callsToMin = 0;
 	private static int callsToMax = 0;
+	private static int totalCallToMinMax = 0;
 	
 	private static Map<BoardState, Long> boardStatesEvaluations;
 	
@@ -44,8 +45,8 @@ public class IterativeDeepening {
 			
 			nextMove = signToPlay.equals(1L)?calculateTheNextMove1(boardState):calculateTheNextMove2(boardState);
 			boardState.apply(nextMove);
-			System.out.println(" ########################################################################## ");
-			System.out.println(boardState);
+//			System.out.println(" ########################################################################## ");
+//			System.out.println(boardState);
 			System.out.println(" ########################################################################## ");
 			
 			ply++;
@@ -68,21 +69,24 @@ public class IterativeDeepening {
 		
 		int totalStateEvaluated = 0;
 		
-		System.out.println(" ##### Calculating Next Move .............. ");
+//		System.out.println(" ##### Calculating Next Move .............. ");
 		
 		for(int i=1; i<=minimaxDepth;i++){
 			maxValue1( boardState, -1000000, 1000000, i);
 			System.out.println(" State Evaluated After iteration "+i+" : "+statesEvaluated);
 			totalStateEvaluated = totalStateEvaluated +statesEvaluated;
 			statesEvaluated = 0;
-			System.out.println(" Calls To Min and Max : "+(callsToMax+callsToMin));
+			System.out.println(" Calls To Min and Max After iteration "+i+" : "+(callsToMax+callsToMin));
+			totalCallToMinMax = totalCallToMinMax+callsToMax+callsToMin;
 			callsToMax = 0;
 			callsToMin = 0;
 		}
 		
 		System.out.println(" State Evaluated : "+totalStateEvaluated);
 		statesEvaluated = 0;
-		System.out.println(" ######## Next Move Calculated ######## ");
+		System.out.println(" Total Calls To Min and Max: "+totalCallToMinMax);
+		totalCallToMinMax = 0;
+//		System.out.println(" ######## Next Move Calculated ######## ");
 		
 		return moveToGuaranteeBestScore;
 		
